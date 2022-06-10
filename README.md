@@ -16,6 +16,7 @@
     </style>
     <h1>KICoDi</h1>
     <h2>Knowledge Inference for nonCommunicable Diseases</h2>
+    <h2>DEvelopment version</h2>    
     <img src="media/logo.png" width=400 alt="logo">
     <h3>Please read this guide before try to run the application.</h3>
     <p>

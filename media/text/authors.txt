@@ -7,7 +7,7 @@ KICoDi is a collective effort of members of many institutions:
 - Enrique Guzmán Ramírez <sup>[1](#UTM)</sup>
 - Yalbi Itzel Balderas Martínez <sup>[2](#INER)</sup>
 - Enrique Galicia Pineda <sup>[3](#FCien)</sup>
-
+- José Armando Sánchez Rojas <sup>[1](#UTM)</sup>
 
 <a name="UTM">1</a>: Universidad Tecnológica de la Mixteca
 

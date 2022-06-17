@@ -1,5 +1,8 @@
 #### Knowledge Inference
-KICoDi works by receiving a sentence and separating it into a `subject-predicted, object` tuple. The main task is to infer new tuples from new and possibly valid objects.
+To test KICoDi select one of the sentences from the input examples below and from this sentence the system will generate a sentence that could be validated.
 
 For the task related to the `subject-predicted, object` clasification we use the [Semnantic Role Labeling](https://demo.allennlp.org/semantic-role-labeling) tool from [The Allen Institute for Artificial Intelligence](https://allenai.org).
 By determining the structure of the sentence we can make the clasification and pass them as arguments to our predictor function.
+
+
+

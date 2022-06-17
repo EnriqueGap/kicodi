@@ -29,7 +29,7 @@ st.header('KICoDi')
 ######################################################
 st.sidebar.image('media/logo.png')
 st.sidebar.header('KICoDi')
-nav=st.sidebar.radio('',['Home', 'Inference','Authors'])
+nav=st.sidebar.radio('',['Inference','Home','Authors'])
 st.sidebar.write('')
 st.sidebar.write('')
 st.sidebar.write('')

@@ -72,10 +72,13 @@ def create_tuples(labels):
     if agent:
         SP=re.findall(r'ARG0: (.+?)\]',labels)[0]
     SP=SP+" "+re.findall(r'\[V: (.+?)\]',labels)[0]    
-    if object:
+    if patient:
         O=re.findall(r'ARG1: (.+?)\]',labels)[0]
-    copy=copy.replace(SP, "")
-    copy=copy.replace(O, "")
+    if agent:
+        copy=copy.replace(re.findall(r'\[ARG0: .+?\]',labels)[0], "")
+    copy=copy.replace(re.findall(r'\[V: .+?\]',labels)[0], "")
+    if patient:
+        copy=copy.replace(re.findall(r'\[ARG1: .+?\]',labels)[0], "")
     for item in re.findall(r':(.+?)\]',copy):
         SP+=item
     SP.strip()

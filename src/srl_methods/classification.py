@@ -1,5 +1,6 @@
 from allennlp_models import pretrained
 allenslr=pretrained.load_predictor('structured-prediction-srl-bert')
+import string
 import re
 def extract(sentence):
     """
@@ -14,30 +15,35 @@ def extract(sentence):
         Else
         None
     """
+    remove='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~'
+    input=sentence.translate(str.maketrans('', '', remove))
     count=[]                                        # num de palabras sin anotar por verbo
     counter=0
-    output=allenslr.predict(sentence)
+    output=allenslr.predict(input)
 
     if len(output['verbs'])==0:                     # Ningun verbo anotado
         print("ERROR: Ningún verbo anotado")
         return None
     elif len(output['verbs'])==1:                   # Un verbo anotado
         tags=output['verbs'][0]['tags']             # Valida el etiquetado
-        if any('ARG' in string for string in tags):
-            labels=output['verbs'][0]['description']
-            tuple=create_tuples(labels)             # Extracción de información
+        if bool(re.search('ARG[0-5]', string) for string in tags):
+            tuple=create_tuples(output)             # Extracción de información
         else:
-            print("ERROR: Insuficientes argumentos para crear la tupla")
+            print("ERROR: Insuficientes etiquetas para crear la tupla")
             return None
     else:                                           # Más de un verbo anotado
-        for verb in output['verbs']:                # Valida eitquetas para cada verbo
+        for verb in output['verbs']:                
             for tag in verb['tags']:
                 if tag == 'O':
                     counter+=1                      # Cuenta las palabras sin anotar
             count.append(counter)
             counter=0
-        labels=output['verbs'][search(count)]['description']
-        tuple=create_tuples(labels)                 # Extracción de información
+        tags=output['verbs'][search(count)]['tags'] #selecciona la mejor anotación
+        if bool(re.search('ARG[0-5]', string) for string in tags):  # Valida etiquetas
+            tuple=create_tuples(output, search(count))  # Extracción de información
+        else:
+            print("ERROR: Insuficientes etiquetas para crear la tupla")
+            return None
     return tuple
 def search(a):
     """
@@ -54,33 +60,29 @@ def search(a):
         if a[i]<a[j]:
             j=i
     return j
-def create_tuples(labels):
+def create_tuples(output, index=0):
     """
     Create a tuple from PropBank Anotations
 
     Arg:
-    sentence :: str
+    output :: Dict create with AllenNLP SLR
+    index :: int to acces to the correct labeling 
     
     Returns:
     (sj_oj, prd) list
     """
-    copy = labels
-    SP=''
-    O=''
-    agent='ARG0' in labels
-    patient='ARG1' in labels
-    if agent:
-        SP=re.findall(r'ARG0: (.+?)\]',labels)[0]
-    SP=SP+" "+re.findall(r'\[V: (.+?)\]',labels)[0]    
-    if patient:
-        O=re.findall(r'ARG1: (.+?)\]',labels)[0]
-    if agent:
-        copy=copy.replace(re.findall(r'\[ARG0: .+?\]',labels)[0], "")
-    copy=copy.replace(re.findall(r'\[V: .+?\]',labels)[0], "")
-    if patient:
-        copy=copy.replace(re.findall(r'\[ARG1: .+?\]',labels)[0], "")
-    for item in re.findall(r':(.+?)\]',copy):
-        SP+=item
-    SP.strip()
-    O.strip()
+    SP=[]
+    O=[]
+    tags=output['verbs'][index]['tags']
+    words=output['words']
+    for a in range(0,5):
+        if any('ARG'+str(a) in string for string in tags):
+            for i in range(len(tags)):
+                if bool(re.search('ARG['+str(a+1)+'-5]', tags[i])):
+                    O.append(words[i])
+                elif not 'O' in tags[i]:
+                    SP.append(words[i])
+            break
+    SP=" ".join(SP)
+    O=" ".join(O)
     return [SP,O]
